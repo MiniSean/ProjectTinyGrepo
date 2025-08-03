@@ -26,13 +26,13 @@ public class ResourceManager
     /// Event that is invoked whenever any collector's inventory or allocation changes.
     /// Listeners can subscribe to this to update UI or other game logic.
     /// </summary>
-    public event Action<IResourceReceiver> OnInventoryChanged;
+    public event Action<IResourceTrader> OnInventoryChanged;
 
     // Main inventory: Stores the actual resources held by each collector.
-    private readonly Dictionary<IResourceReceiver, Dictionary<ResourceType, int>> _inventories = new Dictionary<IResourceReceiver, Dictionary<ResourceType, int>>();
+    private readonly Dictionary<IResourceTrader, Dictionary<ResourceType, int>> _inventories = new Dictionary<IResourceTrader, Dictionary<ResourceType, int>>();
 
     // Allocated resources: Stores resources that are "in transit" during an extraction.
-    private readonly Dictionary<IResourceReceiver, Dictionary<ResourceType, int>> _allocated = new Dictionary<IResourceReceiver, Dictionary<ResourceType, int>>();
+    private readonly Dictionary<IResourceTrader, Dictionary<ResourceType, int>> _allocated = new Dictionary<IResourceTrader, Dictionary<ResourceType, int>>();
 
     // List of transition orders
     private readonly List<ITransactionOrder> _activeTransactions = new List<ITransactionOrder>();
@@ -74,6 +74,7 @@ public class ResourceManager
 
         DeallocateResource(transaction.Destination, transaction.ResourceType, transaction.Amount);
         AddResource(transaction.Destination, transaction.ResourceType, transaction.Amount);
+        RemoveResource(transaction.Source, transaction.ResourceType, transaction.Amount);
         _activeTransactions.Remove(transaction);
         Debug.Log($"ResourceManager: Transaction complete. {transaction.Destination} received {transaction.Amount} {transaction.ResourceType}. Total: {GetResourceAmount(transaction.Destination, transaction.ResourceType)}");
     }
@@ -87,13 +88,13 @@ public class ResourceManager
         Debug.Log($"ResourceManager: Transaction for {transaction.Amount} {transaction.ResourceType} by {transaction.Destination} was cancelled.");
     }
 
-    private void AllocateResource(IResourceReceiver destination, ResourceType type, int amount)
+    private void AllocateResource(IResourceReceiver trader, ResourceType type, int amount)
     {
-        if (!_allocated.ContainsKey(destination)) _allocated[destination] = new Dictionary<ResourceType, int>();
-        if (!_allocated[destination].ContainsKey(type)) _allocated[destination][type] = 0;
-        _allocated[destination][type] += amount;
+        if (!_allocated.ContainsKey(trader)) _allocated[trader] = new Dictionary<ResourceType, int>();
+        if (!_allocated[trader].ContainsKey(type)) _allocated[trader][type] = 0;
+        _allocated[trader][type] += amount;
         // Invoke the event to notify listeners of the change.
-        OnInventoryChanged?.Invoke(destination);
+        OnInventoryChanged?.Invoke(trader);
     }
 
     private void DeallocateResource(IResourceReceiver destination, ResourceType type, int amount)
@@ -106,71 +107,70 @@ public class ResourceManager
         }
     }
 
-    public void RemoveResource(IResourceReceiver collector, ResourceType type, int amount)
+    public void RemoveResource(IResourceProvider trader, ResourceType type, int amount)
     {
-        if (_inventories.ContainsKey(collector) && _inventories[collector].ContainsKey(type))
+        if (_inventories.ContainsKey(trader) && _inventories[trader].ContainsKey(type))
         {
-            int currentAmount = _inventories[collector][type];
+            int currentAmount = _inventories[trader][type];
             if (amount > currentAmount)
             {
-                Debug.LogWarning($"ResourceManager: Attempted to remove {amount} of {type}, but collector only has {currentAmount}. Clamping amount.");
-                amount = currentAmount; // Clamp the amount to prevent negative inventory.
+                Debug.LogWarning($"ResourceManager: Attempted to remove {amount} of {type}, but collector only has {currentAmount}.");
             }
 
-            _inventories[collector][type] -= amount;
-            OnInventoryChanged?.Invoke(collector);
+            _inventories[trader][type] -= amount;
+            OnInventoryChanged?.Invoke(trader);
         }
     }
 
-    private void AddResource(IResourceReceiver collector, ResourceType type, int amount)
+    private void AddResource(IResourceReceiver trader, ResourceType type, int amount)
     {
-        if (!_inventories.ContainsKey(collector)) _inventories[collector] = new Dictionary<ResourceType, int>();
-        if (!_inventories[collector].ContainsKey(type)) _inventories[collector][type] = 0;
-        _inventories[collector][type] += amount;
+        if (!_inventories.ContainsKey(trader)) _inventories[trader] = new Dictionary<ResourceType, int>();
+        if (!_inventories[trader].ContainsKey(type)) _inventories[trader][type] = 0;
+        _inventories[trader][type] += amount;
         // Invoke the event to notify listeners of the change.
-        OnInventoryChanged?.Invoke(collector);
+        OnInventoryChanged?.Invoke(trader);
     }
 
-    public int GetResourceAmount(IResourceReceiver collector, ResourceType type)
+    public int GetResourceAmount(IResourceTrader trader, ResourceType type)
     {
-        if (_inventories.ContainsKey(collector) && _inventories[collector].ContainsKey(type))
+        if (_inventories.ContainsKey(trader) && _inventories[trader].ContainsKey(type))
         {
-            return _inventories[collector][type];
+            return _inventories[trader][type];
         }
         return 0;
     }
 
-    public int GetAllocatedAmount(IResourceReceiver collector, ResourceType type)
+    public int GetAllocatedAmount(IResourceReceiver trader, ResourceType type)
     {
-        if (_allocated.ContainsKey(collector) && _allocated[collector].ContainsKey(type))
+        if (_allocated.ContainsKey(trader) && _allocated[trader].ContainsKey(type))
         {
-            return _allocated[collector][type];
+            return _allocated[trader][type];
         }
         return 0;
     }
 
-    public int GetTotalResourceAmount(IResourceReceiver collector)
+    public int GetTotalResourceAmount(IResourceTrader trader)
     {
-        if (_inventories.ContainsKey(collector))
+        if (_inventories.ContainsKey(trader))
         {
-            return _inventories[collector].Values.Sum();
+            return _inventories[trader].Values.Sum();
         }
         return 0;
     }
 
-    public int GetTotalAllocatedAmount(IResourceReceiver collector)
+    public int GetTotalAllocatedAmount(IResourceReceiver trader)
     {
-        if (_allocated.ContainsKey(collector))
+        if (_allocated.ContainsKey(trader))
         {
-            return _allocated[collector].Values.Sum();
+            return _allocated[trader].Values.Sum();
         }
         return 0;
     }
 
-    public bool HasCapacity(IResourceReceiver receiver, ResourceType type, int amount)
+    public bool HasCapacity(IResourceReceiver trader, ResourceType type, int amount)
     {
-        int destHeld = GetTotalResourceAmount(receiver);
-        int destAllocated = GetTotalAllocatedAmount(receiver);
-        return destHeld + destAllocated + amount <= receiver.Capacity;
+        int destHeld = GetTotalResourceAmount(trader);
+        int destAllocated = GetTotalAllocatedAmount(trader);
+        return destHeld + destAllocated + amount <= trader.Capacity;
     }
 }

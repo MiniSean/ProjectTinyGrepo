@@ -1,7 +1,7 @@
 /// <summary>
 /// Defines the contract for any component that can receive resources.
 /// </summary>
-public interface IResourceReceiver
+public interface IResourceReceiver: IResourceTrader
 {
     /// <summary>
     /// The total resource capacity of this receiver.

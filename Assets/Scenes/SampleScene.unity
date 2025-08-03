@@ -872,6 +872,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031365016}
     m_Modifications:
+    - target: {fileID: 6404282282796284542, guid: b3419d79a21e14740867d65e9a378c49, type: 3}
+      propertyPath: extractionCooldown
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 6677332930486877835, guid: b3419d79a21e14740867d65e9a378c49, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.77
@@ -1572,6 +1576,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: VeinStonePrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 8303951184369398191, guid: 50b42fbb6f0b84241940eaa75739f5db, type: 3}
+      propertyPath: extractionCooldown
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 8608557815869732186, guid: 50b42fbb6f0b84241940eaa75739f5db, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.217352
@@ -1773,6 +1781,10 @@ PrefabInstance:
     - target: {fileID: 6689056045726190306, guid: 0dca7c7ec6deee84d96f6c66e04b1574, type: 3}
       propertyPath: m_Name
       value: VeinWoodPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 7620024936846515505, guid: 0dca7c7ec6deee84d96f6c66e04b1574, type: 3}
+      propertyPath: extractionCooldown
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 7923510065956166084, guid: 0dca7c7ec6deee84d96f6c66e04b1574, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3440,10 +3452,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 53738804495556123, guid: 003b81a645d2f0d4c9867329b7eeacdc, type: 3}
-      propertyPath: m_Radius
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3757910315307511699, guid: 003b81a645d2f0d4c9867329b7eeacdc, type: 3}
       propertyPath: m_Name
       value: VoidPrefab
@@ -3487,10 +3495,6 @@ PrefabInstance:
     - target: {fileID: 7371435830241795590, guid: 003b81a645d2f0d4c9867329b7eeacdc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8222486517280986503, guid: 003b81a645d2f0d4c9867329b7eeacdc, type: 3}
-      propertyPath: depositRadius
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

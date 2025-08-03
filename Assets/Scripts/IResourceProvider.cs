@@ -1,7 +1,7 @@
 /// <summary>
 /// Defines the contract for any component that can provide resources.
 /// </summary>
-public interface IResourceProvider
+public interface IResourceProvider: IResourceTrader
 {
     /// <summary>
     /// Checks if this provider can supply a certain amount of a resource.

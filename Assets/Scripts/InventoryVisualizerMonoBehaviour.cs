@@ -38,7 +38,7 @@ public class InventoryVisualizerMonoBehaviour : MonoBehaviour
     /// <summary>
     /// The event handler that is called by the ResourceManager.
     /// </summary>
-    private void HandleInventoryChange(IResourceReceiver collector)
+    private void HandleInventoryChange(IResourceTrader collector)
     {
         // Only redraw the UI if the change affects our target collector.
         if (System.Object.ReferenceEquals(collector, targetCollector))
