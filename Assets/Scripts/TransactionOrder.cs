@@ -6,7 +6,7 @@ public class TransactionOrder : ITransactionOrder
 {
     private readonly ResourceManager m_Manager;
     public IResourceProvider Source { get; }
-    public IResourceCollector Destination { get; }
+    public IResourceReceiver Destination { get; }
     private readonly ResourceType m_ResourceType;
     private readonly int m_Amount;
     public bool IsCompletedOrCanceled { get; private set; }
@@ -14,7 +14,7 @@ public class TransactionOrder : ITransactionOrder
     public ResourceType ResourceType => m_ResourceType;
     public int Amount => m_Amount;
 
-    public TransactionOrder(ResourceManager manager, IResourceProvider source, IResourceCollector destination, ResourceType resourceType, int amount)
+    public TransactionOrder(ResourceManager manager, IResourceProvider source, IResourceReceiver destination, ResourceType resourceType, int amount)
     {
         m_Manager = manager;
         Source = source;

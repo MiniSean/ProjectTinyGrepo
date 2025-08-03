@@ -58,7 +58,7 @@ public class ResourceExtractionMonoBehaviour : MonoBehaviour, IResourceExtractio
         IResourceCollector collector = other.GetComponent<IResourceCollector>();
         if (collector != null && isExtractionPossible)
         {
-            collector.OnTransactionOpportunity(this);
+            collector.OnExtractionOpportunity(this);
         }
     }
 
@@ -69,7 +69,7 @@ public class ResourceExtractionMonoBehaviour : MonoBehaviour, IResourceExtractio
         if (collector != null)
         {
             // Notify the collector that it must stop extraction.
-            collector.OnTransactionExit();
+            collector.OnExtractionExit();
             // The collector has left, stop the extraction process.
             if (m_ExtractionCoroutine != null)
             {
@@ -85,11 +85,6 @@ public class ResourceExtractionMonoBehaviour : MonoBehaviour, IResourceExtractio
     {
         // Assumes extraction point is infinite.
         return true;
-    }
-
-    public void FulfillProvide(ResourceType type, int amount)
-    {
-
     }
 
     /// <summary>
@@ -129,7 +124,7 @@ public class ResourceExtractionMonoBehaviour : MonoBehaviour, IResourceExtractio
         m_ActiveTransaction?.Complete();
 
         // Get the collector from the completed transaction.
-        IResourceCollector collector = m_ActiveTransaction?.Destination;
+        IResourceReceiver receiver = m_ActiveTransaction?.Destination;
 
         // Reset state for the next cycle.
         m_ExtractionCoroutine = null;
@@ -138,10 +133,10 @@ public class ResourceExtractionMonoBehaviour : MonoBehaviour, IResourceExtractio
         bool wasReapproved = false;
         // If the collector is still in range, immediately notify it of the
         // opportunity to start the next extraction cycle.
-        if (collector != null)
+        if (receiver != null && receiver is IResourceCollector collector)
         {
             Debug.Log("Cycle complete. Re-triggering extraction opportunity.");
-            wasReapproved = collector.OnTransactionOpportunity(this);
+            wasReapproved = collector.OnExtractionOpportunity(this);
         }
 
         // If the next transaction was not approved (e.g., collector is full or left),

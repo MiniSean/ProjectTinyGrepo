@@ -12,7 +12,7 @@ public interface ITransactionOrder
     /// <summary>
     /// The collector that is the destination of the resources for this transaction.
     /// </summary>
-    IResourceCollector Destination { get; }
+    IResourceReceiver Destination { get; }
 
     /// <summary>
     /// The type of resource being transferred.

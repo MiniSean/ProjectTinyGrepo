@@ -26,13 +26,13 @@ public class ResourceManager
     /// Event that is invoked whenever any collector's inventory or allocation changes.
     /// Listeners can subscribe to this to update UI or other game logic.
     /// </summary>
-    public event Action<IResourceCollector> OnInventoryChanged;
+    public event Action<IResourceReceiver> OnInventoryChanged;
 
     // Main inventory: Stores the actual resources held by each collector.
-    private readonly Dictionary<IResourceCollector, Dictionary<ResourceType, int>> _inventories = new Dictionary<IResourceCollector, Dictionary<ResourceType, int>>();
+    private readonly Dictionary<IResourceReceiver, Dictionary<ResourceType, int>> _inventories = new Dictionary<IResourceReceiver, Dictionary<ResourceType, int>>();
 
     // Allocated resources: Stores resources that are "in transit" during an extraction.
-    private readonly Dictionary<IResourceCollector, Dictionary<ResourceType, int>> _allocated = new Dictionary<IResourceCollector, Dictionary<ResourceType, int>>();
+    private readonly Dictionary<IResourceReceiver, Dictionary<ResourceType, int>> _allocated = new Dictionary<IResourceReceiver, Dictionary<ResourceType, int>>();
 
     // List of transition orders
     private readonly List<ITransactionOrder> _activeTransactions = new List<ITransactionOrder>();
@@ -43,7 +43,7 @@ public class ResourceManager
     /// <summary>
     /// A universal method to request any resource transaction between a provider and a collector.
     /// </summary>
-    public ITransactionOrder RequestTransaction(IResourceProvider source, IResourceCollector destination, ResourceType type, int amount)
+    public ITransactionOrder RequestTransaction(IResourceProvider source, IResourceReceiver destination, ResourceType type, int amount)
     {
         if (!source.CanProvide(type, amount))
         {
@@ -52,9 +52,7 @@ public class ResourceManager
         }
 
         // Check if the destination has capacity.
-        int destHeld = GetTotalResourceAmount(destination);
-        int destAllocated = GetTotalAllocatedAmount(destination);
-        if (destHeld + destAllocated + amount > destination.Capacity)
+        if (!HasCapacity(destination, type, amount))
         {
             Debug.Log("ResourceManager: Transaction denied. Destination has insufficient capacity.");
             return null;
@@ -89,7 +87,7 @@ public class ResourceManager
         Debug.Log($"ResourceManager: Transaction for {transaction.Amount} {transaction.ResourceType} by {transaction.Destination} was cancelled.");
     }
 
-    private void AllocateResource(IResourceCollector destination, ResourceType type, int amount)
+    private void AllocateResource(IResourceReceiver destination, ResourceType type, int amount)
     {
         if (!_allocated.ContainsKey(destination)) _allocated[destination] = new Dictionary<ResourceType, int>();
         if (!_allocated[destination].ContainsKey(type)) _allocated[destination][type] = 0;
@@ -98,7 +96,7 @@ public class ResourceManager
         OnInventoryChanged?.Invoke(destination);
     }
 
-    private void DeallocateResource(IResourceCollector destination, ResourceType type, int amount)
+    private void DeallocateResource(IResourceReceiver destination, ResourceType type, int amount)
     {
         if (_allocated.ContainsKey(destination) && _allocated[destination].ContainsKey(type))
         {
@@ -108,7 +106,7 @@ public class ResourceManager
         }
     }
 
-    public void RemoveResource(IResourceCollector collector, ResourceType type, int amount)
+    public void RemoveResource(IResourceReceiver collector, ResourceType type, int amount)
     {
         if (_inventories.ContainsKey(collector) && _inventories[collector].ContainsKey(type))
         {
@@ -123,8 +121,8 @@ public class ResourceManager
             OnInventoryChanged?.Invoke(collector);
         }
     }
-    
-    private void AddResource(IResourceCollector collector, ResourceType type, int amount)
+
+    private void AddResource(IResourceReceiver collector, ResourceType type, int amount)
     {
         if (!_inventories.ContainsKey(collector)) _inventories[collector] = new Dictionary<ResourceType, int>();
         if (!_inventories[collector].ContainsKey(type)) _inventories[collector][type] = 0;
@@ -133,7 +131,7 @@ public class ResourceManager
         OnInventoryChanged?.Invoke(collector);
     }
 
-    public int GetResourceAmount(IResourceCollector collector, ResourceType type)
+    public int GetResourceAmount(IResourceReceiver collector, ResourceType type)
     {
         if (_inventories.ContainsKey(collector) && _inventories[collector].ContainsKey(type))
         {
@@ -142,7 +140,7 @@ public class ResourceManager
         return 0;
     }
 
-    public int GetAllocatedAmount(IResourceCollector collector, ResourceType type)
+    public int GetAllocatedAmount(IResourceReceiver collector, ResourceType type)
     {
         if (_allocated.ContainsKey(collector) && _allocated[collector].ContainsKey(type))
         {
@@ -150,8 +148,8 @@ public class ResourceManager
         }
         return 0;
     }
-    
-    public int GetTotalResourceAmount(IResourceCollector collector)
+
+    public int GetTotalResourceAmount(IResourceReceiver collector)
     {
         if (_inventories.ContainsKey(collector))
         {
@@ -160,12 +158,19 @@ public class ResourceManager
         return 0;
     }
 
-    public int GetTotalAllocatedAmount(IResourceCollector collector)
+    public int GetTotalAllocatedAmount(IResourceReceiver collector)
     {
         if (_allocated.ContainsKey(collector))
         {
             return _allocated[collector].Values.Sum();
         }
         return 0;
+    }
+
+    public bool HasCapacity(IResourceReceiver receiver, ResourceType type, int amount)
+    {
+        int destHeld = GetTotalResourceAmount(receiver);
+        int destAllocated = GetTotalAllocatedAmount(receiver);
+        return destHeld + destAllocated + amount <= receiver.Capacity;
     }
 }

@@ -10,11 +10,4 @@ public interface IResourceProvider
     /// <param name="amount">The amount of the resource requested.</param>
     /// <returns>True if the resource can be provided, false otherwise.</returns>
     bool CanProvide(ResourceType type, int amount);
-
-    /// <summary>
-    /// Called by the ResourceManager to debit the provided resources from this provider's inventory.
-    /// </summary>
-    /// <param name="type">The type of resource to fulfill.</param>
-    /// <param name="amount">The amount of the resource to fulfill.</param>
-    void FulfillProvide(ResourceType type, int amount);
 }

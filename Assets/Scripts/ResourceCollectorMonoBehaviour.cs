@@ -18,7 +18,7 @@ public class ResourceCollectorMonoBehaviour : MonoBehaviour, IResourceCollector,
     /// <summary>
     /// Called when this collector enters the radius of a resource node.
     /// </summary>
-    public bool OnTransactionOpportunity(IResourceExtraction resourceNode)
+    public bool OnExtractionOpportunity(IResourceExtraction resourceNode)
     {
         if (m_ActiveTransaction == null || m_ActiveTransaction.IsCompletedOrCanceled)
         {
@@ -46,7 +46,7 @@ public class ResourceCollectorMonoBehaviour : MonoBehaviour, IResourceCollector,
     /// <summary>
     /// Called when this collector exits the radius of a resource node.
     /// </summary>
-    public void OnTransactionExit()
+    public void OnExtractionExit()
     {
         if (m_ActiveTransaction != null)
         {
@@ -57,15 +57,14 @@ public class ResourceCollectorMonoBehaviour : MonoBehaviour, IResourceCollector,
         }
     }
 
+    public bool CanReceive(ResourceType type, int amount)
+    {
+        return ResourceManager.Instance.HasCapacity(this, type, amount);
+    }
+
     public bool CanProvide(ResourceType type, int amount)
     {
         // Check the actual inventory to see if we have enough resources.
         return ResourceManager.Instance.GetResourceAmount(this, type) >= amount;
-    }
-
-    public void FulfillProvide(ResourceType type, int amount)
-    {
-        // The ResourceManager will call this to debit the resources from our inventory.
-        ResourceManager.Instance.RemoveResource(this, type, amount);
     }
 }
