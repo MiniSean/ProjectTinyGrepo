@@ -27,6 +27,11 @@ public class ResourceManager
     /// Listeners can subscribe to this to update UI or other game logic.
     /// </summary>
     public event Action<IResourceTrader> OnInventoryChanged;
+    /// <summary>
+    /// Event that is invoked when a transaction is successfully completed.
+    /// It passes the full transaction details.
+    /// </summary>
+    public event Action<ITransactionOrder> OnTransactionCompleted;
 
     // Main inventory: Stores the actual resources held by each collector.
     private readonly Dictionary<IResourceTrader, Dictionary<ResourceType, int>> _inventories = new Dictionary<IResourceTrader, Dictionary<ResourceType, int>>();
@@ -77,6 +82,8 @@ public class ResourceManager
         RemoveResource(transaction.Source, transaction.ResourceType, transaction.Amount);
         _activeTransactions.Remove(transaction);
         Debug.Log($"ResourceManager: Transaction complete. {transaction.Destination} received {transaction.Amount} {transaction.ResourceType}. Total: {GetResourceAmount(transaction.Destination, transaction.ResourceType)}");
+        // Announce that the transaction has been completed.
+        OnTransactionCompleted?.Invoke(transaction);
     }
 
     internal void CancelTransaction(ITransactionOrder transaction)
