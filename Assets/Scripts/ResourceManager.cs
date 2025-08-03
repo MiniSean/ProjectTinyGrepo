@@ -35,88 +35,95 @@ public class ResourceManager
     private readonly Dictionary<IResourceCollector, Dictionary<ResourceType, int>> _allocated = new Dictionary<IResourceCollector, Dictionary<ResourceType, int>>();
 
     // List of transition orders
-    private readonly List<TransactionOrder> _activeTransactions = new List<TransactionOrder>();
+    private readonly List<ITransactionOrder> _activeTransactions = new List<ITransactionOrder>();
 
     // Private constructor to enforce the singleton pattern.
     private ResourceManager() { }
 
     /// <summary>
-    /// A collector requests to start an extraction process.
+    /// A universal method to request any resource transaction between a provider and a collector.
     /// </summary>
-    /// <param name="collector">The collector initiating the request.</param>
-    /// <param name="node">The resource node to extract from.</param>
-    /// <param name="amount">The amount of resource to be extracted.</param>
-    /// <returns>True if the transaction is approved, false otherwise.</returns>
-    public ITransactionOrder RequestExtraction(IResourceCollector collector, IResourceExtraction node, int amount)
+    public ITransactionOrder RequestTransaction(IResourceProvider source, IResourceCollector destination, ResourceType type, int amount)
     {
-        if (!node.IsExtractionAllowed)
+        if (!source.CanProvide(type, amount))
         {
-            Debug.Log("ResourceManager: Transaction denied. Node is not active.");
+            Debug.Log("ResourceManager: Transaction denied. Source cannot provide the requested amount.");
             return null;
         }
 
-        // Placeholder for future capacity checks.
-        // int currentAmount = GetResourceAmount(collector, node.Type);
-        // int allocatedAmount = GetAllocatedAmount(collector, node.Type);
-        // if (currentAmount + allocatedAmount + amount > collector.Capacity) return false;
-
-        // --- Capacity Check Logic ---
-        int currentHeldAmount = GetTotalResourceAmount(collector);
-        int currentAllocatedAmount = GetTotalAllocatedAmount(collector);
-
-        if (currentHeldAmount + currentAllocatedAmount + amount > collector.Capacity)
+        // Check if the destination has capacity.
+        int destHeld = GetTotalResourceAmount(destination);
+        int destAllocated = GetTotalAllocatedAmount(destination);
+        if (destHeld + destAllocated + amount > destination.Capacity)
         {
-            Debug.Log($"ResourceManager: Transaction denied. Collector '{collector}' has insufficient capacity.");
+            Debug.Log("ResourceManager: Transaction denied. Destination has insufficient capacity.");
             return null;
         }
-        // --------------------------
 
-        // Allocate the resource.
-        var transaction = new TransactionOrder(this, collector, node.Type, amount);
+        // (Optional) Add checks for deposit-specific rules, e.g., if the deposit accepts this type.
+
+        // All checks passed, create and approve the transaction.
+        var transaction = new TransactionOrder(this, source, destination, type, amount);
         _activeTransactions.Add(transaction);
-        AllocateResource(collector, node.Type, amount);
-        Debug.Log($"ResourceManager: Transaction approved and created for {collector}. Allocating {amount} {node.Type}.");
+        AllocateResource(destination, type, amount);
+        Debug.Log($"ResourceManager: Transaction approved from {source} to {destination}. Allocating {amount} {type}.");
         return transaction;
     }
 
-    internal void CompleteTransaction(TransactionOrder transaction, IResourceCollector collector, ResourceType type, int amount)
+    internal void CompleteTransaction(ITransactionOrder transaction)
     {
         if (!_activeTransactions.Contains(transaction)) return;
 
-        DeallocateResource(collector, type, amount);
-        AddResource(collector, type, amount);
+        DeallocateResource(transaction.Destination, transaction.ResourceType, transaction.Amount);
+        AddResource(transaction.Destination, transaction.ResourceType, transaction.Amount);
         _activeTransactions.Remove(transaction);
-        Debug.Log($"ResourceManager: Transaction complete. {collector} received {amount} {type}. Total: {GetResourceAmount(collector, type)}");
+        Debug.Log($"ResourceManager: Transaction complete. {transaction.Destination} received {transaction.Amount} {transaction.ResourceType}. Total: {GetResourceAmount(transaction.Destination, transaction.ResourceType)}");
     }
 
-    internal void CancelTransaction(TransactionOrder transaction, IResourceCollector collector, ResourceType type, int amount)
+    internal void CancelTransaction(ITransactionOrder transaction)
     {
         if (!_activeTransactions.Contains(transaction)) return;
 
-        DeallocateResource(collector, type, amount);
+        DeallocateResource(transaction.Destination, transaction.ResourceType, transaction.Amount);
         _activeTransactions.Remove(transaction);
-        Debug.Log($"ResourceManager: Transaction for {amount} {type} by {collector} was cancelled.");
+        Debug.Log($"ResourceManager: Transaction for {transaction.Amount} {transaction.ResourceType} by {transaction.Destination} was cancelled.");
     }
 
-    private void AllocateResource(IResourceCollector collector, ResourceType type, int amount)
+    private void AllocateResource(IResourceCollector destination, ResourceType type, int amount)
     {
-        if (!_allocated.ContainsKey(collector)) _allocated[collector] = new Dictionary<ResourceType, int>();
-        if (!_allocated[collector].ContainsKey(type)) _allocated[collector][type] = 0;
-        _allocated[collector][type] += amount;
+        if (!_allocated.ContainsKey(destination)) _allocated[destination] = new Dictionary<ResourceType, int>();
+        if (!_allocated[destination].ContainsKey(type)) _allocated[destination][type] = 0;
+        _allocated[destination][type] += amount;
         // Invoke the event to notify listeners of the change.
-        OnInventoryChanged?.Invoke(collector);
+        OnInventoryChanged?.Invoke(destination);
     }
 
-    private void DeallocateResource(IResourceCollector collector, ResourceType type, int amount)
+    private void DeallocateResource(IResourceCollector destination, ResourceType type, int amount)
     {
-        if (_allocated.ContainsKey(collector) && _allocated[collector].ContainsKey(type))
+        if (_allocated.ContainsKey(destination) && _allocated[destination].ContainsKey(type))
         {
-            _allocated[collector][type] -= amount;
+            _allocated[destination][type] -= amount;
             // Invoke the event to notify listeners of the change.
-            OnInventoryChanged?.Invoke(collector);
+            OnInventoryChanged?.Invoke(destination);
         }
     }
 
+    public void RemoveResource(IResourceCollector collector, ResourceType type, int amount)
+    {
+        if (_inventories.ContainsKey(collector) && _inventories[collector].ContainsKey(type))
+        {
+            int currentAmount = _inventories[collector][type];
+            if (amount > currentAmount)
+            {
+                Debug.LogWarning($"ResourceManager: Attempted to remove {amount} of {type}, but collector only has {currentAmount}. Clamping amount.");
+                amount = currentAmount; // Clamp the amount to prevent negative inventory.
+            }
+
+            _inventories[collector][type] -= amount;
+            OnInventoryChanged?.Invoke(collector);
+        }
+    }
+    
     private void AddResource(IResourceCollector collector, ResourceType type, int amount)
     {
         if (!_inventories.ContainsKey(collector)) _inventories[collector] = new Dictionary<ResourceType, int>();

@@ -15,10 +15,10 @@ public interface IResourceCollector
     /// </summary>
     /// <param name="resourceNode">A reference to the resource point that can be extracted from.</param>
     /// <returns>True if a new extraction transaction was successfully requested and approved.</returns>
-    bool OnExtractionOpportunity(IResourceExtraction resourceNode);
+    bool OnTransactionOpportunity(IResourceExtraction resourceNode);
 
     /// <summary>
     /// Notifies the collector that it has left the range of a resource node.
     /// </summary>
-    void OnExtractionExit();
+    void OnTransactionExit();
 }

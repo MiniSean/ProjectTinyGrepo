@@ -4,7 +4,7 @@ using UnityEngine;
 /// An implementation of the IResourceCollector interface. This component
 /// allows the player to collect resources from extraction points.
 /// </summary>
-public class ResourceCollectorMonoBehaviour : MonoBehaviour, IResourceCollector
+public class ResourceCollectorMonoBehaviour : MonoBehaviour, IResourceCollector, IResourceProvider
 {
     [Header("Collector Settings")]
     [Tooltip("The total amount of resources this collector can hold.")]
@@ -18,14 +18,14 @@ public class ResourceCollectorMonoBehaviour : MonoBehaviour, IResourceCollector
     /// <summary>
     /// Called when this collector enters the radius of a resource node.
     /// </summary>
-    public bool OnExtractionOpportunity(IResourceExtraction resourceNode)
+    public bool OnTransactionOpportunity(IResourceExtraction resourceNode)
     {
         if (m_ActiveTransaction == null || m_ActiveTransaction.IsCompletedOrCanceled)
         {
             Debug.Log($"'{name}' has an opportunity to extract from an {resourceNode.Type} node.");
 
             // Request a transaction from the global manager.
-            m_ActiveTransaction = ResourceManager.Instance.RequestExtraction(this, resourceNode, 1);
+            m_ActiveTransaction = ResourceManager.Instance.RequestTransaction(resourceNode, this, resourceNode.Type, 1);
             bool wasApproved = m_ActiveTransaction != null;
 
             if (wasApproved)
@@ -46,7 +46,7 @@ public class ResourceCollectorMonoBehaviour : MonoBehaviour, IResourceCollector
     /// <summary>
     /// Called when this collector exits the radius of a resource node.
     /// </summary>
-    public void OnExtractionExit()
+    public void OnTransactionExit()
     {
         if (m_ActiveTransaction != null)
         {
@@ -55,5 +55,17 @@ public class ResourceCollectorMonoBehaviour : MonoBehaviour, IResourceCollector
             m_ActiveTransaction.Cancel();
             m_ActiveTransaction = null;
         }
+    }
+
+    public bool CanProvide(ResourceType type, int amount)
+    {
+        // Check the actual inventory to see if we have enough resources.
+        return ResourceManager.Instance.GetResourceAmount(this, type) >= amount;
+    }
+
+    public void FulfillProvide(ResourceType type, int amount)
+    {
+        // The ResourceManager will call this to debit the resources from our inventory.
+        ResourceManager.Instance.RemoveResource(this, type, amount);
     }
 }

@@ -5,17 +5,20 @@
 public class TransactionOrder : ITransactionOrder
 {
     private readonly ResourceManager m_Manager;
-    public readonly IResourceCollector m_Collector;
+    public IResourceProvider Source { get; }
+    public IResourceCollector Destination { get; }
     private readonly ResourceType m_ResourceType;
     private readonly int m_Amount;
     public bool IsCompletedOrCanceled { get; private set; }
 
-    public IResourceCollector Collector => m_Collector;
+    public ResourceType ResourceType => m_ResourceType;
+    public int Amount => m_Amount;
 
-    public TransactionOrder(ResourceManager manager, IResourceCollector collector, ResourceType resourceType, int amount)
+    public TransactionOrder(ResourceManager manager, IResourceProvider source, IResourceCollector destination, ResourceType resourceType, int amount)
     {
         m_Manager = manager;
-        m_Collector = collector;
+        Source = source;
+        Destination = destination;
         m_ResourceType = resourceType;
         m_Amount = amount;
         IsCompletedOrCanceled = false;
@@ -24,14 +27,14 @@ public class TransactionOrder : ITransactionOrder
     public void Complete()
     {
         if (IsCompletedOrCanceled) return;
-        m_Manager.CompleteTransaction(this, m_Collector, m_ResourceType, m_Amount);
+        m_Manager.CompleteTransaction(this);
         IsCompletedOrCanceled = true;
     }
 
     public void Cancel()
     {
         if (IsCompletedOrCanceled) return;
-        m_Manager.CancelTransaction(this, m_Collector, m_ResourceType, m_Amount);
+        m_Manager.CancelTransaction(this);
         IsCompletedOrCanceled = true;
     }
 }

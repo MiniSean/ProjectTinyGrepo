@@ -1,23 +1,33 @@
 /// <summary>
 /// Defines the contract for a resource transaction.
-/// Provides methods to complete or cancel the transaction.
+/// Provides methods to complete or cancel the transaction and exposes all participants and details.
 /// </summary>
 public interface ITransactionOrder
 {
     /// <summary>
-    /// The collector who initiated this transaction.
+    /// The provider that is the source of the resources for this transaction.
     /// </summary>
-    IResourceCollector Collector { get; }
-
-    // /// <summary>
-    // /// The Provider who provides for this transaction.
-    // /// </summary>
-    // IResourceExtraction Provider { get; }
+    IResourceProvider Source { get; }
 
     /// <summary>
-    /// Boolean whether transaction is completed or canceled.
+    /// The collector that is the destination of the resources for this transaction.
     /// </summary>
-    public bool IsCompletedOrCanceled { get; }
+    IResourceCollector Destination { get; }
+
+    /// <summary>
+    /// The type of resource being transferred.
+    /// </summary>
+    ResourceType ResourceType { get; }
+
+    /// <summary>
+    /// The amount of resource being transferred.
+    /// </summary>
+    int Amount { get; }
+
+    /// <summary>
+    /// A flag indicating if the transaction has already been completed or canceled.
+    /// </summary>
+    bool IsCompletedOrCanceled { get; }
 
     /// <summary>
     /// Finalizes the transaction, moving resources from allocated to inventory.

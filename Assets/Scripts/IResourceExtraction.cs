@@ -1,7 +1,7 @@
 /// <summary>
 /// Defines the contract for any component that acts as a source of resources.
 /// </summary>
-public interface IResourceExtraction
+public interface IResourceExtraction: IResourceProvider
 {
     /// <summary>
     /// The type of resource this node provides.
