@@ -114,7 +114,7 @@ public class ResourceManager
         }
     }
 
-    public void RemoveResource(IResourceProvider trader, ResourceType type, int amount)
+    public void RemoveResource(IResourceTrader trader, ResourceType type, int amount)
     {
         if (_inventories.ContainsKey(trader) && _inventories[trader].ContainsKey(type))
         {
