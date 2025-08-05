@@ -45,14 +45,34 @@ public class ResourceUpgradableMonoBehaviour : MonoBehaviour, IResourceUpgradabl
     [SerializeField]
     private int _currentLevel = 0;
 
+    #region Events
     /// <summary>
-    /// Public event invoked when the component is successfully upgraded.
+    /// Public event invoked when the component is successfully upgraded. The int is the new level.
     /// </summary>
     public event Action<int> OnUpgraded;
+    /// <summary>
+    /// Public event invoked when the underlying resource amounts for this component's requirements have changed.
+    /// </summary>
+    public event Action OnRequirementsUpdated;
+    #endregion
+
     private ITransactionOrder m_ActiveTransaction;
 
-    #region IResourceUpgradable Implementation
+    #region Unity Lifecycle
+    private void OnEnable()
+    {
+        // Subscribe to the global resource manager to know when any inventory changes.
+        ResourceManager.Instance.OnInventoryChanged += HandleInventoryChange;
+    }
 
+    private void OnDisable()
+    {
+        // Always unsubscribe to prevent memory leaks.
+        ResourceManager.Instance.OnInventoryChanged -= HandleInventoryChange;
+    }
+    #endregion
+
+    #region IResourceUpgradable Implementation
     public int CurrentLevel => _currentLevel;
     public int MaxLevel => _upgradeLevels.Count;
 
@@ -103,10 +123,26 @@ public class ResourceUpgradableMonoBehaviour : MonoBehaviour, IResourceUpgradabl
 
         _currentLevel++;
         Debug.Log($"{gameObject.name} successfully upgraded to Level {CurrentLevel}!", this);
+        // Invoke the level up event.
         OnUpgraded?.Invoke(_currentLevel);
+        // An upgrade also implies requirements have changed for the next level.
+        OnRequirementsUpdated?.Invoke();
     }
 
     #endregion
+
+    /// <summary>
+    /// Handles the OnInventoryChanged event from the ResourceManager.
+    /// </summary>
+    private void HandleInventoryChange(IResourceTrader changedTrader)
+    {
+        // If the inventory change affects this specific component,
+        // broadcast our own, more specific event.
+        if ((System.Object)changedTrader == this)
+        {
+            OnRequirementsUpdated?.Invoke();
+        }
+    }
 
     #region IInteractionHandler Implemetnation
     /// <summary>

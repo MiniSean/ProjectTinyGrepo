@@ -61,16 +61,6 @@ public class ResourceUpgradableEditor : Editor
             EditorGUILayout.HelpBox("Max level reached.", MessageType.Info);
         }
 
-        // --- Upgrade Button ---
-        EditorGUILayout.Space(10);
-        GUI.backgroundColor = Color.yellow;
-        // The button is only clickable if the CanUpgrade condition is met.
-        GUI.enabled = ((IUpgradable)upgradable).CanUpgrade();
-        if (GUILayout.Button("Perform Upgrade"))
-        {
-            // Calling the public Upgrade method on the component.
-            upgradable.Upgrade();
-        }
         GUI.enabled = true; // Always re-enable GUI.
     }
 }

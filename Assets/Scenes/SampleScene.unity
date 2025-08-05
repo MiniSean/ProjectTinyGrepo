@@ -916,6 +916,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: VeinGoldPrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 9000421445314994610, guid: b3419d79a21e14740867d65e9a378c49, type: 3}
+      propertyPath: interactionCooldown
+      value: 0.2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1582,6 +1586,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: VeinStonePrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 5218139979007646340, guid: 50b42fbb6f0b84241940eaa75739f5db, type: 3}
+      propertyPath: interactionCooldown
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 8608557815869732186, guid: 50b42fbb6f0b84241940eaa75739f5db, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.78
@@ -1780,6 +1788,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031365016}
     m_Modifications:
+    - target: {fileID: 51069220489713048, guid: 0dca7c7ec6deee84d96f6c66e04b1574, type: 3}
+      propertyPath: interactionCooldown
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 6689056045726190306, guid: 0dca7c7ec6deee84d96f6c66e04b1574, type: 3}
       propertyPath: m_Name
       value: VeinWoodPrefab
@@ -1852,7 +1864,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interactionRadius: 2
-  interactionCooldown: 0.5
+  interactionCooldown: 0.2
   interactionCompleteTime: 0.1
   progressVisualRenderer: {fileID: 378973002}
 --- !u!1 &832575517
@@ -3499,6 +3511,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UpgradablePrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 7309390872863833728, guid: 388a7007015e2394fa0bfb6e19b7ee46, type: 3}
+      propertyPath: interactionCooldown
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 7991012251638041139, guid: 388a7007015e2394fa0bfb6e19b7ee46, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.66
@@ -3542,7 +3558,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3387260837651075288, guid: 388a7007015e2394fa0bfb6e19b7ee46, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 7396886815375791911}
   m_SourcePrefab: {fileID: 100100000, guid: 388a7007015e2394fa0bfb6e19b7ee46, type: 3}
 --- !u!1001 &4475210032994221471
 PrefabInstance:
@@ -3616,6 +3635,27 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 801236226}
   m_SourcePrefab: {fileID: 100100000, guid: 003b81a645d2f0d4c9867329b7eeacdc, type: 3}
+--- !u!1 &5926501761300571819 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3387260837651075288, guid: 388a7007015e2394fa0bfb6e19b7ee46, type: 3}
+  m_PrefabInstance: {fileID: 2884970025779905321}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7396886815375791911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5926501761300571819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46795e9c40c19a24498021003d4ab022, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _verticalOffset: 2
+  _fontSize: 0.5
+  _panelWidth: 200
+  _panelHeight: 100
 --- !u!1001 &8537319717618692874
 PrefabInstance:
   m_ObjectHideFlags: 0
