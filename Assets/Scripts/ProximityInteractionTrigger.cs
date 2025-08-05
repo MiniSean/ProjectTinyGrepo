@@ -208,17 +208,17 @@ public interface IInteractionHandler
     /// Called when an IResourceProvider enters the trigger volume.
     /// return: true if transaction is accepted, false otherwise.
     /// </summary>
-    public abstract bool AttemptTransactionStart(IResourceProvider provider);
+    public abstract bool AttemptTransactionStart(IResourceTrader interactor);
 
     /// <summary>
     /// Called when interaction coroutine finishes.
     /// return: true if transaction completion is accepted, false otherwise.
     /// </summary>
-    public abstract bool AttemptTransactionComplete(IResourceProvider provider);
+    public abstract bool AttemptTransactionComplete(IResourceTrader interactor);
 
     /// <summary>
     /// Called when an IResourceProvider exits the trigger volume.
     /// return: true if transaction cancellation is accepted, false otherwise.
     /// </summary>
-    public abstract bool AttemptTransactionCancel(IResourceProvider provider);
+    public abstract bool AttemptTransactionCancel(IResourceTrader interactor);
 }

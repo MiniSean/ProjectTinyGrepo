@@ -49,6 +49,7 @@ public class ResourceUpgradableMonoBehaviour : MonoBehaviour, IResourceUpgradabl
     /// Public event invoked when the component is successfully upgraded.
     /// </summary>
     public event Action<int> OnUpgraded;
+    private ITransactionOrder m_ActiveTransaction;
 
     #region IResourceUpgradable Implementation
 
@@ -107,20 +108,21 @@ public class ResourceUpgradableMonoBehaviour : MonoBehaviour, IResourceUpgradabl
 
     #endregion
 
-    private ITransactionOrder m_ActiveTransaction;
-
+    #region IInteractionHandler Implemetnation
     /// <summary>
     /// Called when an IResourceProvider enters the trigger volume.
     /// return: true if transaction is accepted, false otherwise.
     /// </summary>
-    public bool AttemptTransactionStart(IResourceProvider provider)
+    public bool AttemptTransactionStart(IResourceTrader interactor)
     {
+        // This handler expects the interactor to be a provider.
+        IResourceProvider provider = interactor as IResourceProvider;
         if (provider == null || m_ActiveTransaction != null) return false;
 
         IResourceRequirements _resourceRequirements = GetUpgradeRequirements();
         foreach (IResourceRequirement resourceRequirement in _resourceRequirements.Requirements)
         {
-            if (ResourceManager.Instance.GetResourceAmount(provider, resourceRequirement.ResourceType) > 0 && !resourceRequirement.IsFulfilled)
+            if (ResourceManager.Instance.GetResourceAmount(interactor, resourceRequirement.ResourceType) > 0 && !resourceRequirement.IsFulfilled)
             {
                 m_ActiveTransaction = ResourceManager.Instance.RequestTransaction(provider, this, resourceRequirement.ResourceType, 1);
                 bool wasApproved = m_ActiveTransaction != null;
@@ -137,10 +139,11 @@ public class ResourceUpgradableMonoBehaviour : MonoBehaviour, IResourceUpgradabl
     /// Called when interaction coroutine finishes.
     /// return: true if transaction completion is accepted, false otherwise.
     /// </summary>
-    public bool AttemptTransactionComplete(IResourceProvider provider)
+    public bool AttemptTransactionComplete(IResourceTrader interactor)
     {
+        IResourceProvider provider = interactor as IResourceProvider;
         if (m_ActiveTransaction == null || provider != m_ActiveTransaction.Source) return false;
-        // The cycle is complete. Finalize the transaction.
+
         m_ActiveTransaction?.Complete();
         m_ActiveTransaction = null;
 
@@ -156,8 +159,9 @@ public class ResourceUpgradableMonoBehaviour : MonoBehaviour, IResourceUpgradabl
     /// Called when an IResourceProvider exits the trigger volume.
     /// return: true if transaction cancellation is accepted, false otherwise.
     /// </summary>
-    public bool AttemptTransactionCancel(IResourceProvider provider)
+    public bool AttemptTransactionCancel(IResourceTrader interactor)
     {
+        IResourceProvider provider = interactor as IResourceProvider;
         if (m_ActiveTransaction != null && provider == m_ActiveTransaction.Source)
         {
             m_ActiveTransaction.Cancel();
@@ -166,4 +170,5 @@ public class ResourceUpgradableMonoBehaviour : MonoBehaviour, IResourceUpgradabl
         }
         return false;
     }
+    #endregion
 }

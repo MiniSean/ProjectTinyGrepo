@@ -872,10 +872,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031365016}
     m_Modifications:
-    - target: {fileID: 6404282282796284542, guid: b3419d79a21e14740867d65e9a378c49, type: 3}
-      propertyPath: extractionCooldown
-      value: 0.3
-      objectReference: {fileID: 0}
     - target: {fileID: 6677332930486877835, guid: b3419d79a21e14740867d65e9a378c49, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.89
@@ -1242,6 +1238,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7538d8ff1a34db24c833d523b587b30e, type: 3}
+--- !u!23 &378973002 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 9001544892632104724, guid: 003b81a645d2f0d4c9867329b7eeacdc, type: 3}
+  m_PrefabInstance: {fileID: 4475210032994221471}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1363,6 +1364,11 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
+--- !u!1 &520328146 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3757910315307511699, guid: 003b81a645d2f0d4c9867329b7eeacdc, type: 3}
+  m_PrefabInstance: {fileID: 4475210032994221471}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &533329441
 GameObject:
   m_ObjectHideFlags: 0
@@ -1572,17 +1578,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1031365016}
     m_Modifications:
-    - target: {fileID: 4627863604299185110, guid: 50b42fbb6f0b84241940eaa75739f5db, type: 3}
-      propertyPath: m_Radius
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 5068245976992392828, guid: 50b42fbb6f0b84241940eaa75739f5db, type: 3}
       propertyPath: m_Name
       value: VeinStonePrefab
-      objectReference: {fileID: 0}
-    - target: {fileID: 8303951184369398191, guid: 50b42fbb6f0b84241940eaa75739f5db, type: 3}
-      propertyPath: extractionCooldown
-      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 8608557815869732186, guid: 50b42fbb6f0b84241940eaa75739f5db, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1786,10 +1784,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: VeinWoodPrefab
       objectReference: {fileID: 0}
-    - target: {fileID: 7620024936846515505, guid: 0dca7c7ec6deee84d96f6c66e04b1574, type: 3}
-      propertyPath: extractionCooldown
-      value: 0.3
-      objectReference: {fileID: 0}
     - target: {fileID: 7923510065956166084, guid: 0dca7c7ec6deee84d96f6c66e04b1574, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.01
@@ -1845,6 +1839,22 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7371435830241795590, guid: 003b81a645d2f0d4c9867329b7eeacdc, type: 3}
   m_PrefabInstance: {fileID: 4475210032994221471}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &801236226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520328146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96dc96e20e2e6bb479e2b48763b27150, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interactionRadius: 2
+  interactionCooldown: 0.5
+  interactionCompleteTime: 0.1
+  progressVisualRenderer: {fileID: 378973002}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -3375,11 +3385,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7991012251638041139, guid: 388a7007015e2394fa0bfb6e19b7ee46, type: 3}
   m_PrefabInstance: {fileID: 2884970025779905321}
   m_PrefabAsset: {fileID: 0}
---- !u!23 &1941622176288568876 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 7320062034648645124, guid: 388a7007015e2394fa0bfb6e19b7ee46, type: 3}
-  m_PrefabInstance: {fileID: 2884970025779905321}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1999880147126655205
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3494,10 +3499,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: UpgradablePrefab
       objectReference: {fileID: 0}
-    - target: {fileID: 6787229824146755742, guid: 388a7007015e2394fa0bfb6e19b7ee46, type: 3}
-      propertyPath: m_Radius
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 7991012251638041139, guid: 388a7007015e2394fa0bfb6e19b7ee46, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.66
@@ -3541,13 +3542,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3387260837651075288, guid: 388a7007015e2394fa0bfb6e19b7ee46, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7396886815375791908}
-    - targetCorrespondingSourceObject: {fileID: 3387260837651075288, guid: 388a7007015e2394fa0bfb6e19b7ee46, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7396886815375791910}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 388a7007015e2394fa0bfb6e19b7ee46, type: 3}
 --- !u!1001 &4475210032994221471
 PrefabInstance:
@@ -3616,53 +3611,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3757910315307511699, guid: 003b81a645d2f0d4c9867329b7eeacdc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 801236226}
   m_SourcePrefab: {fileID: 100100000, guid: 003b81a645d2f0d4c9867329b7eeacdc, type: 3}
---- !u!1 &5926501761300571819 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3387260837651075288, guid: 388a7007015e2394fa0bfb6e19b7ee46, type: 3}
-  m_PrefabInstance: {fileID: 2884970025779905321}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &7396886815375791908
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5926501761300571819}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 43500b2a5991eee42869be73a582cffd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _upgradeLevels:
-  - Costs:
-    - ResourceType: 0
-      Amount: 5
-    - ResourceType: 1
-      Amount: 5
-  - Costs:
-    - ResourceType: 0
-      Amount: 10
-    - ResourceType: 2
-      Amount: 10
-  _currentLevel: 0
---- !u!114 &7396886815375791910
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5926501761300571819}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96dc96e20e2e6bb479e2b48763b27150, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _interactionRadius: 2
-  interactionCooldown: 0.5
-  interactionCompleteTime: 0.1
-  progressVisualRenderer: {fileID: 1941622176288568876}
 --- !u!1001 &8537319717618692874
 PrefabInstance:
   m_ObjectHideFlags: 0

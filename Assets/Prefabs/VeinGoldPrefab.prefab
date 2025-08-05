@@ -660,6 +660,7 @@ GameObject:
   - component: {fileID: 6677332930486877835}
   - component: {fileID: 7774446851835949063}
   - component: {fileID: 6404282282796284542}
+  - component: {fileID: 9000421445314994610}
   m_Layer: 0
   m_Name: VeinGoldPrefab
   m_TagString: Untagged
@@ -724,9 +725,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resourceType: 2
   isExtractionPossible: 1
-  extractionCooldown: 1
-  extractionCompleteTime: 0.1
-  extractionRadius: 2
+--- !u!114 &9000421445314994610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7893435242639060397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96dc96e20e2e6bb479e2b48763b27150, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interactionRadius: 2
+  interactionCooldown: 0.5
+  interactionCompleteTime: 0.1
   progressVisualRenderer: {fileID: 4484956912231580384}
 --- !u!1 &7969232060504581312
 GameObject:

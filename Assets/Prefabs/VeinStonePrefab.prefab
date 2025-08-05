@@ -552,6 +552,7 @@ GameObject:
   - component: {fileID: 8608557815869732186}
   - component: {fileID: 4627863604299185110}
   - component: {fileID: 8303951184369398191}
+  - component: {fileID: 5218139979007646340}
   m_Layer: 0
   m_Name: VeinStonePrefab
   m_TagString: Untagged
@@ -616,9 +617,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resourceType: 0
   isExtractionPossible: 1
-  extractionCooldown: 1
-  extractionCompleteTime: 0.1
-  extractionRadius: 2
+--- !u!114 &5218139979007646340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5068245976992392828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96dc96e20e2e6bb479e2b48763b27150, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interactionRadius: 2
+  interactionCooldown: 0.5
+  interactionCompleteTime: 0.1
   progressVisualRenderer: {fileID: 1576505994989324593}
 --- !u!1 &5357735340706099347
 GameObject:

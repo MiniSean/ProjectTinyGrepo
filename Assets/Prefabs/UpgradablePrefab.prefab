@@ -119,6 +119,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7991012251638041139}
   - component: {fileID: 6787229824146755742}
+  - component: {fileID: 794918464218625247}
+  - component: {fileID: 7309390872863833728}
   m_Layer: 0
   m_Name: UpgradablePrefab
   m_TagString: Untagged
@@ -134,7 +136,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3387260837651075288}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3.66, y: 0, z: 0.53}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -164,6 +166,46 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 2
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &794918464218625247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3387260837651075288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43500b2a5991eee42869be73a582cffd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _upgradeLevels:
+  - Costs:
+    - ResourceType: 0
+      Amount: 5
+    - ResourceType: 1
+      Amount: 5
+  - Costs:
+    - ResourceType: 0
+      Amount: 10
+    - ResourceType: 2
+      Amount: 10
+  _currentLevel: 0
+--- !u!114 &7309390872863833728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3387260837651075288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96dc96e20e2e6bb479e2b48763b27150, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interactionRadius: 2
+  interactionCooldown: 0.5
+  interactionCompleteTime: 0.1
+  progressVisualRenderer: {fileID: 7320062034648645124}
 --- !u!1 &6137054832786822622
 GameObject:
   m_ObjectHideFlags: 0
