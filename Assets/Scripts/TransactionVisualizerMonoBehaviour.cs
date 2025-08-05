@@ -31,7 +31,6 @@ public class TransactionVisualizer : MonoBehaviour
     private void HandleTransactionCompleted(ITransactionOrder transaction)
     {
         if (resourceParticlePrefab == null || colorMap == null) return;
-        Debug.Log("Create particle");
 
         // We need the world positions of the source and destination.
         // We can get these by checking if they are MonoBehaviours.

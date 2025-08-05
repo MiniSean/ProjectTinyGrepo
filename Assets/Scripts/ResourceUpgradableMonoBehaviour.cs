@@ -25,6 +25,9 @@ public class UpgradeCost
 [Serializable]
 public class LevelRequirements
 {
+    [Tooltip("The visual representation for this level.")]
+    public GameObject VisualPrefab;
+    [Tooltip("The resource costs required to upgrade TO this level.")]
     public List<UpgradeCost> Costs = new List<UpgradeCost>();
 }
 
@@ -45,6 +48,14 @@ public class ResourceUpgradableMonoBehaviour : MonoBehaviour, IResourceUpgradabl
     [SerializeField]
     private int _currentLevel = 0;
 
+    [Header("Visuals")]
+    [Tooltip("The parent transform under which the level visuals will be instantiated.")]
+    [SerializeField]
+    private Transform _visualsParent;
+    [Tooltip("A particle effect prefab to instantiate when the building upgrades.")]
+    [SerializeField]
+    private ParticleSystem _upgradeEffectPrefab;
+
     #region Events
     /// <summary>
     /// Public event invoked when the component is successfully upgraded. The int is the new level.
@@ -57,12 +68,15 @@ public class ResourceUpgradableMonoBehaviour : MonoBehaviour, IResourceUpgradabl
     #endregion
 
     private ITransactionOrder m_ActiveTransaction;
+    private GameObject _currentVisualInstance;
 
     #region Unity Lifecycle
     private void OnEnable()
     {
         // Subscribe to the global resource manager to know when any inventory changes.
         ResourceManager.Instance.OnInventoryChanged += HandleInventoryChange;
+        // Set the initial visual state when the component is enabled.
+        UpdateVisuals(playEffect: false);
     }
 
     private void OnDisable()
@@ -123,6 +137,9 @@ public class ResourceUpgradableMonoBehaviour : MonoBehaviour, IResourceUpgradabl
 
         _currentLevel++;
         Debug.Log($"{gameObject.name} successfully upgraded to Level {CurrentLevel}!", this);
+
+        // Update the visual representation to match the new level.
+        UpdateVisuals(playEffect: true);
         // Invoke the level up event.
         OnUpgraded?.Invoke(_currentLevel);
         // An upgrade also implies requirements have changed for the next level.
@@ -130,19 +147,6 @@ public class ResourceUpgradableMonoBehaviour : MonoBehaviour, IResourceUpgradabl
     }
 
     #endregion
-
-    /// <summary>
-    /// Handles the OnInventoryChanged event from the ResourceManager.
-    /// </summary>
-    private void HandleInventoryChange(IResourceTrader changedTrader)
-    {
-        // If the inventory change affects this specific component,
-        // broadcast our own, more specific event.
-        if ((System.Object)changedTrader == this)
-        {
-            OnRequirementsUpdated?.Invoke();
-        }
-    }
 
     #region IInteractionHandler Implemetnation
     /// <summary>
@@ -207,4 +211,62 @@ public class ResourceUpgradableMonoBehaviour : MonoBehaviour, IResourceUpgradabl
         return false;
     }
     #endregion
+
+    /// <summary>
+    /// Destroys the current visual instance, plays an optional effect, and instantiates the correct visual for the current level.
+    /// </summary>
+    /// <param name="playEffect">Should the upgrade particle effect be played?</param>
+    private void UpdateVisuals(bool playEffect)
+    {
+        Debug.Log("Updating visuals");
+        // Ensure we have a parent to instantiate under.
+        if (_visualsParent == null)
+        {
+            Debug.LogError("Visuals Parent transform is not assigned!", this);
+            return;
+        }
+
+        // Destroy the previous visual if it exists.
+        if (_currentVisualInstance != null)
+        {
+            Destroy(_currentVisualInstance);
+        }
+
+        // Play the upgrade effect if it's assigned and requested.
+        if (playEffect && _upgradeEffectPrefab != null)
+        {
+            ParticleSystem effectInstance = Instantiate(_upgradeEffectPrefab, _visualsParent.position, _visualsParent.rotation);
+            // Automatically destroy the particle system GameObject after its duration to prevent scene clutter.
+            Destroy(effectInstance.gameObject, effectInstance.main.duration);
+        }
+
+        // Check if the current level is valid.
+        if (_currentLevel < 0 || _currentLevel >= _upgradeLevels.Count)
+        {
+            Debug.LogWarning($"Current level ({_currentLevel}) is out of bounds for the defined visuals.", this);
+            return;
+        }
+
+        // Get the prefab for the current level.
+        GameObject prefabToInstantiate = _upgradeLevels[_currentLevel].VisualPrefab;
+
+        if (prefabToInstantiate != null)
+        {
+            // Instantiate the new visual and store a reference to it.
+            _currentVisualInstance = Instantiate(prefabToInstantiate, _visualsParent.position, _visualsParent.rotation, _visualsParent);
+        }
+    }
+
+    /// <summary>
+    /// Handles the OnInventoryChanged event from the ResourceManager.
+    /// </summary>
+    private void HandleInventoryChange(IResourceTrader changedTrader)
+    {
+        // If the inventory change affects this specific component,
+        // broadcast our own, more specific event.
+        if ((System.Object)changedTrader == this)
+        {
+            OnRequirementsUpdated?.Invoke();
+        }
+    }
 }

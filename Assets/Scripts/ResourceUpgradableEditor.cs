@@ -12,14 +12,12 @@ public class ResourceUpgradableEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        // Draw the default inspector fields (for _upgradeLevels and _currentLevel).
-        base.OnInspectorGUI();
-
         // Get a reference to the component we are inspecting.
         var upgradable = (ResourceUpgradableMonoBehaviour)target;
 
         // Add some space for visual separation.
         EditorGUILayout.Space(10);
+        Color defaultBackgroundColor = GUI.backgroundColor;
         
         // --- Current Level Display ---
         GUI.backgroundColor = new Color(0.8f, 0.8f, 1f); // Light blue
@@ -60,6 +58,10 @@ public class ResourceUpgradableEditor : Editor
         {
             EditorGUILayout.HelpBox("Max level reached.", MessageType.Info);
         }
+        GUI.backgroundColor = defaultBackgroundColor;
+
+        // Draw the default inspector fields (for _upgradeLevels and _currentLevel).
+        base.OnInspectorGUI();
 
         GUI.enabled = true; // Always re-enable GUI.
     }

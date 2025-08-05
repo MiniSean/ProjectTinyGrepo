@@ -85,7 +85,7 @@ public class UpgradableStatusUI : MonoBehaviour
         StringBuilder sb = new StringBuilder();
 
         sb.AppendLine($"<b>Level: {_targetUpgradable.CurrentLevel} / {_targetUpgradable.MaxLevel}</b>");
-        sb.AppendLine("-----------");
+        // sb.AppendLine("-----------");
 
         if (_targetUpgradable.CurrentLevel >= _targetUpgradable.MaxLevel)
         {
@@ -131,9 +131,27 @@ public class UpgradableStatusUI : MonoBehaviour
         _statusText = textGO.AddComponent<TextMeshProUGUI>();
         _statusText.alignment = TextAlignmentOptions.Center;
         _statusText.fontSize = _fontSize;
-        _statusText.color = Color.white;
+        _statusText.color = Color.black;
         _statusText.textWrappingMode = TextWrappingModes.NoWrap;
 
+        // --- Create Custom Material to Ignore Depth Test ---
+        // Find the base shader for TextMeshPro's UI text.
+        Shader baseShader = Shader.Find("TextMeshPro/Mobile/Distance Field");
+        if (baseShader != null)
+        {
+            // Create a new material instance from the base shader.
+            Material customMaterial = new Material(baseShader);
+            // Set the material's render queue to "Overlay". This is a high value
+            // that hints to the renderer to draw it later.
+            customMaterial.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Overlay;
+            // This is the critical step: we are setting the ZTest property.
+            // "Always" means the pixel will be drawn regardless of the depth buffer's content.
+            customMaterial.SetInt("unity_GUIZTestMode", (int)UnityEngine.Rendering.CompareFunction.Always);
+            
+            // Assign the custom material to our text component.
+            _statusText.material = customMaterial;
+        }
+        
         RectTransform textRect = textGO.GetComponent<RectTransform>();
         textRect.localPosition = Vector3.zero;
         textRect.sizeDelta = new Vector2(_panelWidth, _panelHeight);
