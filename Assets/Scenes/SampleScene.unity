@@ -3545,6 +3545,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3387260837651075288, guid: 388a7007015e2394fa0bfb6e19b7ee46, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7396886815375791908}
+    - targetCorrespondingSourceObject: {fileID: 3387260837651075288, guid: 388a7007015e2394fa0bfb6e19b7ee46, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7396886815375791910}
   m_SourcePrefab: {fileID: 100100000, guid: 388a7007015e2394fa0bfb6e19b7ee46, type: 3}
 --- !u!1001 &4475210032994221471
 PrefabInstance:
@@ -3633,22 +3636,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _upgradeLevels:
-  - Name: Level 1
-    Costs:
+  - Costs:
     - ResourceType: 0
       Amount: 5
     - ResourceType: 1
       Amount: 5
-  - Name: Level 2
-    Costs:
+  - Costs:
     - ResourceType: 0
       Amount: 10
     - ResourceType: 2
       Amount: 10
   _currentLevel: 0
-  depositRadius: 2
-  extractionCooldown: 0.5
-  extractionCompleteTime: 0.1
+--- !u!114 &7396886815375791910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5926501761300571819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96dc96e20e2e6bb479e2b48763b27150, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interactionRadius: 2
+  interactionCooldown: 0.5
+  interactionCompleteTime: 0.1
   progressVisualRenderer: {fileID: 1941622176288568876}
 --- !u!1001 &8537319717618692874
 PrefabInstance:
